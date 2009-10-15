@@ -9,11 +9,11 @@ CatalystX::InjectComponent - Inject components into your Catalyst application
 
 =head1 VERSION
 
-Version 0.023
+Version 0.024
 
 =cut
 
-our $VERSION = '0.023';
+our $VERSION = '0.024';
 
 =head1 SYNOPSIS
 
@@ -54,7 +54,7 @@ If you're using the Moose version of Catalyst, then you can use the following te
     after 'setup_components' => sub {
         my $class = shift;
 
-        CatalystX::InjectComponent->inject( catalyst => $class, ... )
+        CatalystX::InjectComponent->inject( into => $class, ... )
     };
 
 =head1 METHODS

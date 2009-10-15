@@ -22,11 +22,11 @@ no_index:
     - xt
 requires:
   Carp: 0
-  Catalyst::Runtime: 0
+  Catalyst::Runtime: 5.8
   Class::Inspector: 0
   Devel::InnerPackage: 0
   parent: 0
 resources:
   license: http://dev.perl.org/licenses/
   repository: http://github.com/robertkrimen/CatalystX-InjectComponent/tree/master
-version: 0.023
+version: 0.024
