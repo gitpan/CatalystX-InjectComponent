@@ -1,85 +1,12 @@
 package CatalystX::InjectComponent;
+{
+  $CatalystX::InjectComponent::VERSION = '0.025';
+}
+# ABSTRACT: Inject components into your Catalyst application
 
 use warnings;
 use strict;
 
-=head1 NAME
-
-CatalystX::InjectComponent - Inject components into your Catalyst application
-
-=head1 VERSION
-
-Version 0.024
-
-=cut
-
-our $VERSION = '0.024';
-
-=head1 SYNOPSIS
-
-    package My::App;
-
-    use Catalyst::Runtime '5.80';
-
-    use Moose;
-    BEGIN { extends qw/Catalyst/ }
-
-    ...
-
-    after 'setup_components' => sub {
-        my $class = shift;
-        CatalystX::InjectComponent->inject( into => $class, component => 'MyModel' );
-        if ( $class->config->{ ... ) {
-            CatalystX::InjectComponent->inject( into => $class, component => 'MyRootV2', as => 'Controller::Root' );
-        }
-        else {
-            CatalystX::InjectComponent->inject( into => $class, component => 'MyRootV1', as => 'Root' ); # Controller:: will be automatically prefixed
-        }
-    };
-
-=head1 DESCRIPTION
-
-CatalystX::InjectComponent will inject Controller, Model, and View components into your Catalyst application at setup (run)time. It does this by creating
-a new package on-the-fly, having that package extend the given component, and then having Catalyst setup the new component (via C<< ->setup_component >>)
-
-=head1 So, how do I use this thing?
-
-You should inject your components when appropiate, typically after C<setup_compenents> runs
-
-If you're using the Moose version of Catalyst, then you can use the following technique:
-
-    use Moose;
-    BEGIN { extends qw/Catalyst/ }
-
-    after 'setup_components' => sub {
-        my $class = shift;
-
-        CatalystX::InjectComponent->inject( into => $class, ... )
-    };
-
-=head1 METHODS
-
-=head2 CatalystX::InjectComponent->inject( ... )
-
-    into        The Catalyst package to inject into (e.g. My::App)
-    component   The component package to inject
-    as          An optional moniker to use as the package name for the derived component 
-
-For example:
-
-    ->inject( into => My::App, component => Other::App::Controller::Apple )
-        
-        The above will create 'My::App::Controller::Other::App::Controller::Apple'
-
-    ->inject( into => My::App, component => Other::App::Controller::Apple, as => Apple )
-
-        The above will create 'My::App::Controller::Apple'
-
-=head1 ACKNOWLEDGEMENTS
-
-Inspired by L<Catalyst::Plugin::AutoCRUD>
-
-=cut
 
 use Devel::InnerPackage;
 use Class::Inspector;
@@ -152,60 +79,93 @@ sub _setup_component {
     $into->components->{$component_package} = $into->setup_component( $component_package );
 }
 
-=head1 AUTHOR
+1; # End of CatalystX::InjectComponent
 
-Robert Krimen, C<< <rkrimen at cpan.org> >>
+__END__
+=pod
 
-=head1 BUGS
+=head1 NAME
 
-Please report any bugs or feature requests to C<bug-catalystx-injectcomponent at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=CatalystX-InjectComponent>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
+CatalystX::InjectComponent - Inject components into your Catalyst application
 
+=head1 VERSION
 
+version 0.025
 
+=head1 SYNOPSIS
 
-=head1 SUPPORT
+    package My::App;
 
-You can find documentation for this module with the perldoc command.
+    use Catalyst::Runtime '5.80';
 
-    perldoc CatalystX::InjectComponent
+    use Moose;
+    BEGIN { extends qw/Catalyst/ }
 
+    ...
 
-You can also look for information at:
+    after 'setup_components' => sub {
+        my $class = shift;
+        CatalystX::InjectComponent->inject( into => $class, component => 'MyModel' );
+        if ( $class->config->{ ... ) {
+            CatalystX::InjectComponent->inject( into => $class, component => 'MyRootV2', as => 'Controller::Root' );
+        }
+        else {
+            CatalystX::InjectComponent->inject( into => $class, component => 'MyRootV1', as => 'Root' ); # Controller:: will be automatically prefixed
+        }
+    };
 
-=over 4
+=head1 DESCRIPTION
 
-=item * RT: CPAN's request tracker
+CatalystX::InjectComponent will inject Controller, Model, and View components into your Catalyst application at setup (run)time. It does this by creating
+a new package on-the-fly, having that package extend the given component, and then having Catalyst setup the new component (via C<< ->setup_component >>)
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=CatalystX-InjectComponent>
+=head1 So, how do I use this thing?
 
-=item * AnnoCPAN: Annotated CPAN documentation
+You should inject your components when appropriate, typically after C<setup_compenents> runs
 
-L<http://annocpan.org/dist/CatalystX-InjectComponent>
+If you're using the Moose version of Catalyst, then you can use the following technique:
 
-=item * CPAN Ratings
+    use Moose;
+    BEGIN { extends qw/Catalyst/ }
 
-L<http://cpanratings.perl.org/d/CatalystX-InjectComponent>
+    after 'setup_components' => sub {
+        my $class = shift;
 
-=item * Search CPAN
+        CatalystX::InjectComponent->inject( into => $class, ... )
+    };
 
-L<http://search.cpan.org/dist/CatalystX-InjectComponent/>
+=head1 METHODS
 
-=back
+=head2 CatalystX::InjectComponent->inject( ... )
 
+    into        The Catalyst package to inject into (e.g. My::App)
+    component   The component package to inject
+    as          An optional moniker to use as the package name for the derived component 
+
+For example:
+
+    ->inject( into => My::App, component => Other::App::Controller::Apple )
+        
+        The above will create 'My::App::Controller::Other::App::Controller::Apple'
+
+    ->inject( into => My::App, component => Other::App::Controller::Apple, as => Apple )
+
+        The above will create 'My::App::Controller::Apple'
 
 =head1 ACKNOWLEDGEMENTS
 
+Inspired by L<Catalyst::Plugin::AutoCRUD>
 
-=head1 COPYRIGHT & LICENSE
+=head1 AUTHOR
 
-Copyright 2009 Robert Krimen, all rights reserved.
+Robert Krimen <robertkrimen@gmail.com>
 
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+=head1 COPYRIGHT AND LICENSE
 
+This software is copyright (c) 2012 by Robert Krimen.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
 
-1; # End of CatalystX::InjectComponent

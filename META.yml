@@ -1,32 +1,21 @@
 ---
 abstract: 'Inject components into your Catalyst application'
 author:
-  - 'Robert Krimen <rkrimen@cpan.org>'
+  - 'Robert Krimen <robertkrimen@gmail.com>'
 build_requires:
-  ExtUtils::MakeMaker: 6.42
-  Test::More: 0
   Test::Most: 0
 configure_requires:
-  ExtUtils::MakeMaker: 6.42
-distribution_type: module
-generated_by: 'Module::Install version 0.91'
+  ExtUtils::MakeMaker: 6.30
+dynamic_config: 0
+generated_by: 'Dist::Zilla version 4.300003, CPAN::Meta::Converter version 2.112150'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
 name: CatalystX-InjectComponent
-no_index:
-  directory:
-    - inc
-    - t
-    - xt
 requires:
-  Carp: 0
   Catalyst::Runtime: 5.8
   Class::Inspector: 0
   Devel::InnerPackage: 0
   parent: 0
-resources:
-  license: http://dev.perl.org/licenses/
-  repository: http://github.com/robertkrimen/CatalystX-InjectComponent/tree/master
-version: 0.024
+version: 0.025

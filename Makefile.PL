@@ -1,46 +1,56 @@
-use inc::Module::Install;
 
-name     'CatalystX-InjectComponent';
-all_from 'lib/CatalystX/InjectComponent.pm';
-author   'Robert Krimen <rkrimen@cpan.org>';
-license  'perl';
+use strict;
+use warnings;
 
-build_requires 'Test::More';
 
-resources repository => 'http://github.com/robertkrimen/CatalystX-InjectComponent/tree/master';
 
-{
-    require ExtUtils::MakeMaker;
-    use strict;
-    no strict 'refs';
+use ExtUtils::MakeMaker 6.30;
 
-    my $libscan = \&{"ExtUtils::MM_Any::libscan"};
-    *{"ExtUtils::MM_Any::libscan"} = sub {
-        return '' unless $libscan->(@_);
-        return '' if $_[1] =~ /\.sw[p-z]$/;
-        return $_[1];
-    };
+
+
+my %WriteMakefileArgs = (
+  "ABSTRACT" => "Inject components into your Catalyst application",
+  "AUTHOR" => "Robert Krimen <robertkrimen\@gmail.com>",
+  "BUILD_REQUIRES" => {
+    "Test::Most" => 0
+  },
+  "CONFIGURE_REQUIRES" => {
+    "ExtUtils::MakeMaker" => "6.30"
+  },
+  "DISTNAME" => "CatalystX-InjectComponent",
+  "EXE_FILES" => [],
+  "LICENSE" => "perl",
+  "NAME" => "CatalystX::InjectComponent",
+  "PREREQ_PM" => {
+    "Catalyst::Runtime" => "5.8",
+    "Class::Inspector" => 0,
+    "Devel::InnerPackage" => 0,
+    "parent" => 0
+  },
+  "VERSION" => "0.025",
+  "test" => {
+    "TESTS" => "t/*.t"
+  }
+);
+
+
+unless ( eval { ExtUtils::MakeMaker->VERSION(6.56) } ) {
+  my $br = delete $WriteMakefileArgs{BUILD_REQUIRES};
+  my $pp = $WriteMakefileArgs{PREREQ_PM};
+  for my $mod ( keys %$br ) {
+    if ( exists $pp->{$mod} ) {
+      $pp->{$mod} = $br->{$mod} if $br->{$mod} > $pp->{$mod};
+    }
+    else {
+      $pp->{$mod} = $br->{$mod};
+    }
+  }
 }
 
-{
-    map { my ($pk, $vr) = split m/\s/; build_requires $pk => $vr || 0 } grep { ! /^\s*#/ } split m/\n/, <<_END_;
-Test::Most
-_END_
+delete $WriteMakefileArgs{CONFIGURE_REQUIRES}
+  unless eval { ExtUtils::MakeMaker->VERSION(6.52) };
 
-    map { my ($pk, $vr) = split m/\s/; requires $pk => $vr || 0 } grep { ! /^\s*#/ } split m/\n/, <<_END_;
-parent
-Carp
-Class::Inspector
-Devel::InnerPackage
-Catalyst::Runtime 5.8
-_END_
-}
-
-if (-e 'inc/.author') {
-    my $all_from = join '/', 'lib', split m/-/, name . '.pm';
-    `perldoc -tF $all_from > README` if ! -e 'README' || (stat $all_from)[9] > (stat 'README')[9];
-}
+WriteMakefile(%WriteMakefileArgs);
 
 
-WriteAll;
 
